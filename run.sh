@@ -10,4 +10,10 @@
 #this is to switch current working directory to a directory where script is located
 cd $(dirname $(readlink -f $0))
 
-python2.7 phatch/phatch.py
+python2.7 phatch/phatch.py && exit 0
+
+#saving return code
+RC=$?
+
+which zenity > /dev/null && { zenity --info --text="Phatch failed with return code: $RC. Run the 'run.sh' from terminal to find more."; exit; }
+which xmessage  > /dev/null && xmessage -center "Phatch failed with return code: $RC. Run the 'run.sh' from terminal to find more."

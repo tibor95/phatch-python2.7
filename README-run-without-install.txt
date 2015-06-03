@@ -9,3 +9,5 @@ move entire content of archive or make a symlink to run.sh.
 This is intended for linux, of course.
 
 Also note that you still need to have all dependencies installed, starting with python2.7 of course.
+
+Contact: tiborb95 at gmail dot com

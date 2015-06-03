@@ -20,7 +20,7 @@ import locale, wx, sys, cStringIO
 
 import  wx.lib.mixins.listctrl  as  listmix
 
-from wx import ImageFromStream, BitmapFromImage
+from wx from PIL import ImageFromStream, BitmapFromImage
 #----------------------------------------------------------------------
 def getSmallUpArrowData():
     return \

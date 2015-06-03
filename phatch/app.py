@@ -140,18 +140,25 @@ def console(config_paths):
     main(config_paths, app_file=None, gui=True)
 
 
-PYWX_ERROR = """\
-Only the command line package 'phatch-cli' seems to be installed.
-Please install the graphical user interface package 'phatch' as well.
-"""
-
-
 def import_pyWx():
-    try:
-        from pyWx import gui
-    except ImportError:
-        sys.exit(PYWX_ERROR)
+    from pyWx import gui
     return gui
+
+#we do not need the code below, because there is no splitting of packages
+#in this fork anymore
+
+#PYWX_ERROR = """\
+#Only the command line package 'phatch-cli' seems to be installed.
+#Please install the graphical user interface package 'phatch' as well.
+#"""
+
+
+#def import_pyWx():
+    #try:
+        #from pyWx import gui
+    #except ImportError:
+        #sys.exit(PYWX_ERROR)
+    #return gui
 
 
 def _gui(app_file, paths, settings):
