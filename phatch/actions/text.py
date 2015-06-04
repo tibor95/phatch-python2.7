@@ -18,30 +18,44 @@
 
 # Embedded icon is taken from www.openclipart.org (public domain)
 
+# Note that this is modified by TiborB
+# No entitlement and credits of stani and PHATCH teams are denyied 
+# by this, just the team&project seems not alive anymore
+
 # Follows PEP8
 
 from core import models
 from lib.reverse_translation import _t
 
 
+BLURED_ID = 'Blurred_x%d_y%d'
+
 def init():
-    global Image, ImageDraw, ImageFont
-    from PIL import Image
-    from PIL import ImageDraw
-    from PIL import ImageFont
+    global Image, ImageDraw, ImageFont, paste, ImageChops, ImageFilter
+    import Image
+    import ImageDraw
+    import ImageFont
+    import ImageFilter
+    import ImageChops
     global calculate_location, convert_safe_mode
-    from lib.imtools import calculate_location, convert_safe_mode
+    from lib.imtools import calculate_location, convert_safe_mode, paste  
 
 
 def draw_text(image, text, horizontal_offset, vertical_offset,
-              horizontal_justification, vertical_justification, size,
-              color='#FFFFFF', orientation=None, font=None):
+              horizontal_justification, vertical_justification, size, opacity, hallo,
+              cache = {}, color='#FFFFFF', orientation=None, font=None):
     """Draws text on an image."""
     image = convert_safe_mode(image)
+    img_size = image.size
+
+    mask_layer = Image.new('L',img_size, '#FFFFFF')
+    color_layer = Image.new('RGB',img_size, color)
+
+    draw = ImageDraw.Draw(mask_layer)
+
     if orientation:
         orientation = getattr(Image, orientation)
 
-    draw = ImageDraw.Draw(image)
     if font.strip():
         font = ImageFont.truetype(font, size)
     else:
@@ -56,19 +70,40 @@ def draw_text(image, text, horizontal_offset, vertical_offset,
         horizontal_justification, vertical_justification,
         image.size, draw.textsize(text, font=font))
 
-    # draw
-    draw.text(location, text, font=font, fill=color)
-
+    if hallo:
+        x,y = img_size
+        blurred_id = BLURED_ID % (x,y)
+        if blurred_id in cache:
+			hallo_mask_layer = cache[blurred_id]
+        else:
+            hallo_mask_layer = Image.new('L',img_size, '#FFFFFF')
+            draw_hallo = ImageDraw.Draw(hallo_mask_layer)
+            draw_hallo.text(location, text, font=font, fill=255-opacity)
+            n = 0
+            while n < size/10:
+            	hallo_mask_layer = hallo_mask_layer.filter(ImageFilter.BLUR)
+            	draw_hallo.text(location, text, font=font, fill=255-opacity)
+            	n += 1
+            cache[blurred_id] = hallo_mask_layer
+		
+        hallo_color_layer = Image.new('RGB',img_size, color)
+        hallo_color_layer = ImageChops.invert(hallo_color_layer)
+        image = Image.composite(image,hallo_color_layer,hallo_mask_layer)
+    
+ 
+    draw.text(location, text, font=font, fill=255-opacity)
     # composite the watermark with the layer
-    return image
+    return Image.composite(image,color_layer,mask_layer)
+    
 
 
 class Action(models.OffsetMixin, models.Action):
     """Draws text on an image."""
 
     label = _t('Text')
-    author = 'Stani'
-    email = 'spe.stani.be@gmail.com'
+    author = 'Tibor (original filer: Stani)'
+    cache = True
+    email = 'tiborb95@gmail.com'
     init = staticmethod(init)
     pil = staticmethod(draw_text)
     version = '0.1'
@@ -82,11 +117,14 @@ class Action(models.OffsetMixin, models.Action):
         fields[_t('Size')] = self.PixelField('5%',
                                             choices=self.SMALL_PIXELS)
         fields[_t('Color')] = self.ColorField('#000000')
+        fields[_t('Opacity')] = self.SliderField(255,0, 255)
+        fields[_t('Hallo')] = self.BooleanField(False)
+        #opacity = int((self.get_field('Opacity') / 100.0) * 255)
 
         super(Action, self).interface(fields)
 
     def get_relevant_field_labels(self):
-        return ['Text', 'Font', 'Size', 'Color'] + \
+        return ['Text', 'Font', 'Size', 'Color', 'Opacity', 'Hallo'] + \
             super(Action, self).get_relevant_field_labels()
 
     def values(self, info, pixel_fields={}):

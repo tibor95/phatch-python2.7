@@ -18,6 +18,10 @@
 
 # Embedded icon is from Imagemagick (http://www.imagemagick.org).
 
+# Note that this is modified by TiborB
+# No entitlement and credits of stani and PHATCH teams are denyied 
+# by this, just the team/project seems not alive anymore
+
 # Follows PEP8
 
 from core import ct, models
@@ -87,6 +91,29 @@ _t('Unsharp'): \
 _t('Wave'): \
     """%(convert)s file_in.tif -wave %(wave_height)sx%(wave_length)s \
     file_out.png""",
+
+  _t('Normalize'): \
+    """%(convert)s file_in.tif \( +clone -channel all -normalize \) \
+    -compose Blend -define compose:args=%(normalize_strength)s -composite file_out.png""",  
+    
+_t('Red-Warm'): \
+    """%(convert)s file_in.tif -channel all -normalize -channel R -gamma %(g1)s \
+    -channel G -gamma 1.0 -channel B -gamma %(g2)s \
+    file_out.png""",
+
+_t('LCHuv Saturation'): \
+    """%(convert)s file_in.tif -define modulate:colorspace=LCHuv  \
+    -modulate 100,%(saturation_amount)s,100 \
+    file_out.png""",
+
+_t('Cartoonish'): \
+    """%(convert)s file_in.tif -brightness-contrast 0%%x%(contrast)s%% \
+    -define modulate:colorspace=LCHuv -modulate 100,400,100  -median 5  \
+    -dither None -colors %(colors1)s -median 5 \
+    -dither None -colors %(colors2)s -median 5 \
+    -dither None -colors %(colors3)s -median 5 \
+    -dither None -colors %(colors4)s  \
+    file_out.png""",
 }
 
 ACTIONS = COMMANDS.keys()
@@ -97,12 +124,12 @@ class Action(models.Action):
     """Defined variables: <filename> <type> <folder> <width> <height>"""
 
     label = _t('Imagemagick')
-    author = 'Stani'
-    email = 'spe.stani.be@gmail.com'
+    author = 'Tibor (original filer: Stani)'
+    email = 'tiborb95@gmail.com'
     version = '0.1'
     tags = [_t('filter'), _t('plugin')]
     tags_hidden = ACTIONS
-    __doc__ = _t('Blur, Polaroid, Shadow, Unsharp...')
+    __doc__ = _t('Blur, Normalize, Unsharp, LCHuv Saturation... (by TB)')
 
     def init(self):
         self.find_exe('convert', 'Imagemagick')
@@ -134,6 +161,11 @@ class Action(models.Action):
         fields[_t('Unsharp Sigma')] = self.PixelField('3px')
         fields[_t('Wave Height')] = self.PixelField('0px')
         fields[_t('Wave Length')] = self.PixelField('3px')
+        fields[_t('Normalize strength')] = self.SliderField(100, 0, 100)
+        fields[_t('gamma')] = self.SliderField(20, 0, 50)
+        fields[_t('Saturation Amount')] = self.SliderField(130, 0, 300)
+        fields[_t('Colors')] = self.SliderField(8, 0, 20)
+        fields[_t('Contrast')] = self.SliderField(-20, -50, 50)
 
     def get_relevant_field_labels(self):
         """If this method is present, Phatch will only show relevant
@@ -175,6 +207,15 @@ class Action(models.Action):
             relevant.extend(['Unsharp Radius', 'Unsharp Sigma'])
         elif action == 'Wave':
             relevant.extend(['Wave Height', 'Wave Length'])
+        elif action == 'Normalize':
+            relevant.extend(['Normalize strength'])
+        elif action == 'Red-Warm':
+            relevant.extend(['gamma'])
+        elif action == 'LCHuv Saturation':
+            relevant.extend(['Saturation Amount'])
+        elif action == 'Cartoonish':
+            relevant.extend(['Colors'])
+            relevant.extend(['Contrast'])
         return relevant
 
     def apply(self, photo, setting, cache):
@@ -198,6 +239,8 @@ class Action(models.Action):
             'Unsharp Sigma': dia,
             'Wave Height': dia,
             'Wave Length': dia,
+            #'Normalize_strength': dia,
+            #'LCHuv Saturation': dia,           
         })
         values['convert'] = self.exe['convert']
         if action == 'Bullet':
@@ -213,6 +256,18 @@ class Action(models.Action):
                     '-caption "%s" -gravity center' % caption
         elif action == 'Sigmoidal Contrast':
             values['contrast_factor'] /= 10.0
+        elif action == 'Normalize':
+			values['normalize_strength'] *= 1
+        elif action == 'LCHuv Saturation':
+			values['saturation_amount'] *= 1	
+        elif action == 'Cartoonish':
+            values['colors4'] = values['colors']
+            values['colors3'] = 2 * values['colors4']
+            values['colors2'] = 2 * values['colors3']
+            values['colors1'] = 2 * values['colors2']
+        elif action == 'Red-Warm':
+            values['g1'] = 1 + values['gamma'] / 100.0
+            values['g2'] = 1 / values['g1']
 
         command = COMMANDS[action] % values
         #print(command)  #use "python phatch.py -v" for verbose mode

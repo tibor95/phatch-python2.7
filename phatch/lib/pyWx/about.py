@@ -55,6 +55,7 @@ class wxgAboutDialog(wx.Dialog):
         self.title = wx.StaticText(self, -1, _("Program Version"), style=wx.ALIGN_CENTRE)
         self.description = wx.StaticText(self, -1, _("Description"))
         self.website = hl.HyperLinkCtrl(self, -1, label = 'http://www.stani.be', URL = 'http://www.stani.be')
+        self.download = hl.HyperLinkCtrl(self, -1, label = 'http://www.stani.be', URL = 'http://www.stani.be')
         self.credits = wx.Button(self, -1, _("C&redits"))
         self.license = wx.Button(self, -1, _("&License"))
         self.close = wx.Button(self, wx.ID_CLOSE, _("&Close"))
@@ -81,6 +82,7 @@ class wxgAboutDialog(wx.Dialog):
         sizer_7.Add(self.title, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 4)
         sizer_7.Add(self.description, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 4)
         sizer_7.Add(self.website, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 4)
+        sizer_7.Add(self.download, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 4)
         sizer_9.Add(self.credits, 0, wx.ALL|wx.EXPAND, 4)
         sizer_9.Add(self.license, 0, wx.ALL|wx.EXPAND, 3)
         sizer_9.Add(self.close, 0, wx.ALL|wx.EXPAND, 4)
@@ -197,7 +199,7 @@ class CreditsDialog(wxgCreditsDialog):
         self.EndModal(wx.ID_CLOSE)
 
 class Dialog(wxgAboutDialog):
-    def __init__(self,parent,title,logo,description,website, credits, license):
+    def __init__(self,parent,title,logo,description,website,download, credits, license):
         super(Dialog,self).__init__(parent,-1)
         self.SetBackgroundColour(self.GetBackgroundColour())
         #title
@@ -212,6 +214,9 @@ class Dialog(wxgAboutDialog):
         #website
         self.website.SetLabel(website)
         self.website.SetURL(website)
+        #website2
+        self.download.SetLabel(download)
+        self.download.SetURL(download)
         #save other parameters
         self.credits    = credits
         self.license    = license
@@ -251,7 +256,7 @@ def example():
     logo        = wx.ArtProvider_GetBitmap(wx.ART_GO_HOME,wx.ART_OTHER,(128,128))
     credits     = create_credits('code','documentation','translation',
                     'libraries','graphics')
-    aboutDialog = Dialog(None, 'title', logo, 'description', 'website',
+    aboutDialog = Dialog(None, 'title', logo, 'description', 'website', 'download',
                     credits, 'license (latest GPL)')
     app.SetTopWindow(aboutDialog)
     aboutDialog.Show()

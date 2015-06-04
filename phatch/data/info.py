@@ -62,6 +62,8 @@ CREDITS = {
             'email': 'v.oostveen@gmail.com'},
         {'name': 'Pawel T. Jochym',
             'email': 'jochym@gmail.com'},
+        {'name': 'Tibor Bamhor (TB fork)',
+            'email': 'tiborb95@gmail.com'},
                     ],
     'documentation': [
         STANI,
@@ -372,6 +374,7 @@ SETUP = {
     'maintainer': AUTHOR,
     'maintainer_email': AUTHOR_EMAIL,
     'url': 'http://phatch.org',
+    'download_url': 'https://github.com/tibor95/phatch-python2.7',
     'description': 'PHoto bATCH Processor',
     'long_description': 'Phatch enables you to resize, rotate, mirror, '
         'apply watermarks, shadows, rounded courners, '
@@ -412,7 +415,7 @@ INFO = {
     'date': DATE,
     'description': 'Photo Batch Processor',
     'extension': '.' + NAME.lower(),
-    'download_url': 'http://phatch.org',
+    'download_url': 'https://github.com/tibor95/phatch-python2.7',
     'gpl_version': GPL_VERSION,
     'license': 'GPL v.' + GPL_VERSION,
     'maintainer': 'Stani M',

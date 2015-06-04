@@ -789,6 +789,7 @@ class Frame(DialogsMixin, dialogs.BrowseMixin, droplet.Mixin, paint.Mixin,
             logo=graphics.bitmap(images.LOGO),
             description=_('PHoto bATCH Processor'),
             website=ct.INFO['url'],
+            download=ct.INFO['download_url'],           
             credits=all_credits(),
             license=ct.LICENSE,
         )
