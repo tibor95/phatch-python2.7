@@ -107,14 +107,26 @@ _t('LCHuv Saturation'): \
     file_out.png""",
 
 _t('Cartoonish'): \
-    """%(convert)s file_in.tif -brightness-contrast 0%%x%(contrast)s%% \
-    -define modulate:colorspace=LCHuv -modulate 100,400,100  -median 5  \
-    -dither None -colors %(colors1)s -median 5 \
-    -dither None -colors %(colors2)s -median 5 \
-    -dither None -colors %(colors3)s -median 5 \
+    """%(convert)s file_in.tif -brightness-contrast 0%%x-50%% \
+    -define modulate:colorspace=LCHuv -modulate 100,%(pre-saturation)s,100  -statistic mode 5  \
+    -dither None -colors %(colors1)s -statistic mode 5 \
+    -dither None -colors %(colors2)s -statistic mode 5 \
+    -dither None -colors %(colors3)s -statistic mode 5 \
     -dither None -colors %(colors4)s  \
+    -brightness-contrast 0%%x50%% \
+    -define modulate:colorspace=LCHuv -modulate 100,%(post-saturation)s,100 \
     file_out.png""",
 }
+
+#_t('Cartoonish'): \
+    #"""%(convert)s file_in.tif -brightness-contrast 0%%x-50%% \
+    #-define modulate:colorspace=LCHuv -modulate 100,%(saturation)s,100  -median 5  \
+    #-dither None -colors %(colors1)s -median 5 \
+    #-dither None -colors %(colors2)s -median 5 \
+    #-dither None -colors %(colors3)s -median 5 \
+    #-dither None -colors %(colors4)s  \
+    #-brightness-contrast 0%%x50%% \
+    #file_out.png""",
 
 ACTIONS = COMMANDS.keys()
 ACTIONS.sort()
@@ -164,8 +176,10 @@ class Action(models.Action):
         fields[_t('Normalize strength')] = self.SliderField(100, 0, 100)
         fields[_t('gamma')] = self.SliderField(20, 0, 50)
         fields[_t('Saturation Amount')] = self.SliderField(130, 0, 300)
-        fields[_t('Colors')] = self.SliderField(8, 0, 20)
-        fields[_t('Contrast')] = self.SliderField(-20, -50, 50)
+        fields[_t('Colors')] = self.SliderField(8, 0, 25)
+        #fields[_t('Contrast')] = self.SliderField(-15, -50, 50)
+        fields[_t('Pre-Saturation')] = self.SliderField(100, 0, 500)
+        fields[_t('Post-Saturation')] = self.SliderField(100, 0, 300)
 
     def get_relevant_field_labels(self):
         """If this method is present, Phatch will only show relevant
@@ -215,7 +229,8 @@ class Action(models.Action):
             relevant.extend(['Saturation Amount'])
         elif action == 'Cartoonish':
             relevant.extend(['Colors'])
-            relevant.extend(['Contrast'])
+            relevant.extend(['Pre-Saturation'])
+            relevant.extend(['Post-Saturation'])
         return relevant
 
     def apply(self, photo, setting, cache):
@@ -239,7 +254,7 @@ class Action(models.Action):
             'Unsharp Sigma': dia,
             'Wave Height': dia,
             'Wave Length': dia,
-            #'Normalize_strength': dia,
+           	'Saturation Weight': dia,
             #'LCHuv Saturation': dia,           
         })
         values['convert'] = self.exe['convert']
@@ -262,9 +277,9 @@ class Action(models.Action):
 			values['saturation_amount'] *= 1	
         elif action == 'Cartoonish':
             values['colors4'] = values['colors']
-            values['colors3'] = 2 * values['colors4']
-            values['colors2'] = 2 * values['colors3']
-            values['colors1'] = 2 * values['colors2']
+            values['colors3'] = int(1.5 * values['colors4'])
+            values['colors2'] = int(1.5 * values['colors3'])
+            values['colors1'] = int(1.5 * values['colors2'])
         elif action == 'Red-Warm':
             values['g1'] = 1 + values['gamma'] / 100.0
             values['g2'] = 1 / values['g1']

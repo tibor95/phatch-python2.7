@@ -15,5 +15,5 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 BASE = "0.2.7"
-VERSION = "0.2.7-TB1"
-DATE = "Thu, 04 Jun 2015 08:32:00"
+VERSION = "0.2.7-TB2"
+DATE = "Thu, 05 Jun 2015 18:32:00"
