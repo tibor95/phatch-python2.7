@@ -32,11 +32,11 @@ BLURED_ID = 'Blurred_x%d_y%d'
 
 def init():
     global Image, ImageDraw, ImageFont, paste, ImageChops, ImageFilter
-    import Image
-    import ImageDraw
-    import ImageFont
-    import ImageFilter
-    import ImageChops
+    from PIL import Image
+    from PIL import ImageDraw
+    from PIL import ImageFont
+    from PIL import ImageFilter
+    from PIL import ImageChops
     global calculate_location, convert_safe_mode
     from lib.imtools import calculate_location, convert_safe_mode, paste  
 
