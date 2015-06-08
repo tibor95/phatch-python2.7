@@ -44,7 +44,7 @@ from odict import odict as Fields
 
 NO_FIELDS = Fields()
 _t = unicode
-USE_INSPECTOR = _('Use the Image Inspector to list all the variables.')
+USE_INSPECTOR = _('Use the Image Inspector to list all the variables. (Perhaps unicode mismatch if non-english locale)')
 USE_EXTENSIONS = _('You can only use files with the following extensions')
 
 #---image
@@ -191,6 +191,7 @@ class Form(object):
     FOLDERS = [
         '%s_phatch/%s' % (FOLDER, SUBFOLDER),
         '%s/%s' % (FOLDER, SUBFOLDER),
+        FOLDER,
         DESKTOP,
         FOLDER_PHATCH,
         DEFAULT_FOLDER,
