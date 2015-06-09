@@ -67,7 +67,10 @@ if pynotify:
                 'URGENCY_%s' % urgency.upper()))
         if timeout:
             n.set_timeout(timeout)
-        n.show()
+        try:
+            n.show()
+        except:
+            print ("Info: Notification could not be sent.")
 
 elif Growl:
 

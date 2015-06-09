@@ -938,7 +938,7 @@ msgstr "Float"
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/templates/action.py:64
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/templates/action.py:65
 msgid "As"
-msgstr "ako"
+msgstr "Formát"
 
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/templates/action.py:66
 msgid "Mode"
@@ -1208,7 +1208,7 @@ msgstr "Dlaždice"
 
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/core/models.py:319
 msgid "Scale"
-msgstr "Mierka"
+msgstr "Zmenit veľkosť"
 
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/core/models.py:322
 msgid "Mark"
@@ -2429,7 +2429,7 @@ msgstr "Oreže alebo rozšíri plátno"
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/actions/canvas.py:81
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/actions/scale.py:52
 msgid "Canvas Width"
-msgstr "Šířka plátna"
+msgstr "Šírka plátna"
 
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/actions/canvas.py:83
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/actions/scale.py:54
@@ -2491,7 +2491,7 @@ msgstr "Zachovať pomer strán"
 
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/actions/scale.py:58
 msgid "Resample Image"
-msgstr "Prevzorkovať obrázok"
+msgstr "Metoda prevzorkovania"
 
 #: /home/stani/sync/python/phatch/repo/trunk/phatch/actions/scale.py:59
 msgid "Scale Down Only"
