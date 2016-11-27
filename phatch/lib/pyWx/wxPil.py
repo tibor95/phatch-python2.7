@@ -42,6 +42,7 @@ def pil_wxBitmap(image):
 
 def wxImage_pil(wx_image):
     size = wx_image.GetSize()
+    size = tuple(size)
     image = Image.new('RGB', size)
     image.frombytes(wx_image.GetData())
     if wx_image.HasAlpha():
